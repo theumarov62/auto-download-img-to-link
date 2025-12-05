@@ -1,32 +1,26 @@
-# Node modules
+
 node_modules/
 
-# Log fayllari
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# OS fayllari
 .DS_Store
 Thumbs.db
 
-# Environment fayllari
 .env
 .env.local
 .env.*.local
 
-# Puppeteer brauzer fayllari (agar local saqlansa)
+
 **/Default
 **/Profile*
 
-# ZIP va vaqtinchalik papkalar
 imgs/
 images.zip
 
-# Vite / Tailwind build fayllari
 dist/
 build/
 src/output.css
 
-# VS Code fayllari
 .vscode/
