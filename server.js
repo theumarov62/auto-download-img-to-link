@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const IMGS_DIR = path.join(__dirname, "imgs");
-if (!fs.existsSync(IMGS_DIR)) fs.mkdirSync(IMGS_DIR);
+const imgs = path.join(__dirname, "imgs");
+if (!fs.existsSync(imgs)) fs.mkdirSync(imgs);
 
 function downloadImage(imgUrl, filePath) {
   return new Promise((resolve) => {
@@ -30,7 +30,7 @@ function downloadImage(imgUrl, filePath) {
   });
 }
 
-function zipFolder() {
+function zip() {
   return new Promise((resolve) => {
     const output = fs.createWriteStream("images.zip");
     const archive = archiver("zip", { zlib: { level: 9 } });
@@ -47,9 +47,7 @@ app.post("/download", async (req, res) => {
 
   if (!url) return res.status(400).send("URL required!");
 
-  fs.readdirSync(IMGS_DIR).forEach((f) =>
-    fs.unlinkSync(path.join(IMGS_DIR, f))
-  );
+  fs.readdirSync(imgs).forEach((f) => fs.unlinkSync(path.join(imgs, f)));
 
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
@@ -69,16 +67,16 @@ app.post("/download", async (req, res) => {
     }
 
     const ext = path.extname(src.split("?")[0]) || ".jpg";
-    const filepath = path.join(IMGS_DIR, `img_${index}${ext}`);
+    const filepath = path.join(imgs, `img_${index}${ext}`);
     return downloadImage(src, filepath);
   });
 
   await Promise.all(tasks);
   await browser.close();
 
-  await zipFolder();
+  await zip();
 
-  res.sendFile(path.join(__dirname, "images.zip"));
+  res.sendFile(path.join(__dirname));
 });
 
 app.listen(4000, () => console.log("Server running on port 4000"));
