@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Download Website Images</title>
+    <link rel="stylesheet" href="./src/output.css" />
+  </head>
+  <body>
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
+      Web sitedan avtomatik tarzda yuklab oladi
+    </h2>
+
+    <div class="flex flex-col md:flex-row items-center gap-4 justify-center">
+      <input
+        type="text"
+        id="url"
+        placeholder="https://example.com"
+        class="w-72 md:w-96 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+      />
+      <button
+        id="btn"
+        class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition duration-300"
+      >
+        Download Images
+      </button>
+    </div>
+
+    <script>
+      document.getElementById("btn").onclick = async () => {
+        const url = document.getElementById("url").value.trim();
+        if (!url) return alert("URL");
+
+        const resp = await fetch("http://localhost:4000/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        });
+
+        if (!resp.ok) return alert("Error: " + resp.statusText);
+
+        const blob = await resp.blob();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "images.zip";
+        link.click();
+      };
+    </script>
+  </body>
+</html>
